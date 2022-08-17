@@ -3,7 +3,7 @@ body{
 }
 .container{
   margin:auto;
-  max-width:600;
+  max-width:600px;
 }
 .todoBlock{
   padding: 30px;
