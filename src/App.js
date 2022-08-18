@@ -8,12 +8,12 @@ export default class App extends Component {
       {
         id: 1,
         title: "공부하기",
-        complete: false,
+        completed: false,
       },
       {
         id: 2,
         title: "청소하기",
-        complete: false,
+        completed: false,
       },
     ],
     value: "",
@@ -29,11 +29,11 @@ export default class App extends Component {
   };
   // 목록 스타일
   // 함수형태로 만드는 이유 : 나중에 동적인 변경을 해야해서
-  getStyle = () => {
+  getStyle = (completed) => {
     return {
       padding: "10px",
       borderBottom: "1px #ccc dotted",
-      textDecoration: "none",
+      textDecoration: completed ? "line-through" : "none",
     };
   };
 
@@ -61,9 +61,20 @@ export default class App extends Component {
     };
 
     // 할일 추가
-    this.setState({ todoData: [...this.state.todoData, newTodo] });
+    this.setState({ todoData: [...this.state.todoData, newTodo], value: "" });
     //...this.state.todoData 는 원래 있던 데이터를 넣은것이고 (전개연산자로)
     // newTodo 는 새로 추가되는 데이터이다
+  };
+
+  // 체크박스 체크하면 completed가 true로 바뀌는 것
+  handleCompleChange = (id) => {
+    let newTodoData = this.state.todoData.map((data) => {
+      if (data.id === id) {
+        data.completed = !data.completed;
+      }
+      return data;
+    });
+    this.setState({ todoData: newTodoData });
   };
   // 화면 출력
   render() {
@@ -91,8 +102,14 @@ export default class App extends Component {
           </form>
           {/* TODO: map() 메소드를 이용해 내용의 중복없이 data배열을 나열 할 수있다 */}
           {this.state.todoData.map((data) => (
-            <div style={this.getStyle()} key={data.id}>
-              <input type="checkbox" defaultChecked={data.complete} />
+            <div style={this.getStyle(data.completed)} key={data.id}>
+              <input
+                type="checkbox"
+                onChange={() => {
+                  this.handleCompleChange(data.id);
+                }}
+                defaultChecked={false}
+              />
               {data.title}
               <button
                 style={this.btnStyle}
